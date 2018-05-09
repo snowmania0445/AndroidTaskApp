@@ -8,10 +8,17 @@
     android:fitsSystemWindows="true"
     tools:context="jp.techacademy.takuya.sunohara.taskapp.MainActivity">
 
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/category_search_text"
+        android:layout_marginTop="0dp"
+        android:hint="カテゴリー検索"/>
     <ListView
         android:id="@+id/listView1"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_marginTop="45dp"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"

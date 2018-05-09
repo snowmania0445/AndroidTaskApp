@@ -8,9 +8,14 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.view.WindowManager.LayoutParams;
+import android.util.Log;
 
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
@@ -30,10 +35,12 @@ public class MainActivity extends AppCompatActivity {
 
     private ListView mListView;
     private TaskAdapter mTaskAdapter;
+    private EditText mEditText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setSoftInputMode(LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         setContentView(R.layout.activity_main);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -111,6 +118,29 @@ public class MainActivity extends AppCompatActivity {
                 dialog.show();
 
                 return true;
+            }
+        });
+
+        //カテゴリー検索欄が変更された時の処理
+        mEditText = (EditText)findViewById(R.id.category_search_text);
+        mEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.equals("") || s == null) {
+                    mEditText.setText("");
+                } else {
+                    String inputText = mEditText.getText().toString();
+                    RealmResults<Task> searchRealmResults = mRealm.where(Task.class).contains("category", inputText).findAll();
+                    mTaskAdapter.setTaskList(mRealm.copyFromRealm(searchRealmResults));
+                    mListView.setAdapter(mTaskAdapter);
+                    mTaskAdapter.notifyDataSetChanged();
+                }
             }
         });
 
